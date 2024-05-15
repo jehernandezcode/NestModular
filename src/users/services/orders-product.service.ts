@@ -27,7 +27,8 @@ export class OrdersProductService {
   }
 
   async findOne(id: string): Promise<Order> {
-    const order = await this.orderRepository.findOne(id, {
+    const order = await this.orderRepository.findOne({
+      where: { id },
       relations: ['product', 'order'],
     });
 
@@ -38,8 +39,12 @@ export class OrdersProductService {
   }
 
   async create(data: CreateOrderProductDto): Promise<OrderProduct> {
-    const product = await this.productRepository.findOne(data.productId);
-    const order = await this.orderRepository.findOne(data.orderId);
+    const product = await this.productRepository.findOne({
+      where: { id: data.productId },
+    });
+    const order = await this.orderRepository.findOne({
+      where: { id: data.orderId },
+    });
     const newOrderProduct = new OrderProduct();
 
     if (data.orderId && data.productId) {
@@ -55,14 +60,20 @@ export class OrdersProductService {
   }
 
   async update(id: string, data: UpdateOrderProductDto): Promise<OrderProduct> {
-    const orderProduct = await this.orderProductRepository.findOne(id);
+    const orderProduct = await this.orderProductRepository.findOne({
+      where: { id },
+    });
     if (data.orderId) {
-      const order = await this.orderRepository.findOne(data.orderId);
+      const order = await this.orderRepository.findOne({
+        where: { id: data.orderId },
+      });
       orderProduct.order = order;
     }
 
     if (data.productId) {
-      const product = await this.productRepository.findOne(data.productId);
+      const product = await this.productRepository.findOne({
+        where: { id: data.productId },
+      });
       orderProduct.product = product;
     }
     return this.orderProductRepository.save(orderProduct);

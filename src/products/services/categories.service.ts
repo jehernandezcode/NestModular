@@ -16,7 +16,8 @@ export class CategoriesService {
   }
 
   async findOne(id: string) {
-    const category = await this.categoryRepository.findOne(id, {
+    const category = await this.categoryRepository.findOne({
+      where: { id },
       relations: ['products'],
     });
     if (!category) {
@@ -31,7 +32,7 @@ export class CategoriesService {
   }
 
   async update(id: string, changes: UpdateCategoryDto) {
-    const product = await this.categoryRepository.findOne(id);
+    const product = await this.categoryRepository.findOne({ where: { id } });
 
     if (!product) {
       throw new NotFoundException(`Category #${id} not found`);

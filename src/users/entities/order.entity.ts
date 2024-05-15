@@ -25,11 +25,11 @@ export class Order {
   @ManyToOne(() => Customer, (customer) => customer.orders)
   customer: Customer;
 
-  //@Exclude()
+  @Exclude()
   @OneToMany(() => OrderProduct, (item) => item.order)
   items: OrderProduct[];
 
-  /*@Expose()
+  @Expose()
   get products() {
     if (this.items) {
       return this.items
@@ -53,5 +53,5 @@ export class Order {
         }, 0);
     }
     return 0;
-  }*/
+  }
 }

@@ -31,7 +31,8 @@ export class OrdersService {
   }
 
   async findOne(id: string): Promise<Order> {
-    const order = await this.orderRepository.findOne(id, {
+    const order = await this.orderRepository.findOne({
+      where: { id },
       relations: ['items', 'items.product'],
     });
 
@@ -44,16 +45,20 @@ export class OrdersService {
   async create(data: CreateOrderDto): Promise<Order> {
     const newOrder = new Order();
     if (data.customerId) {
-      const customer = await this.customerRepository.findOne(data.customerId);
+      const customer = await this.customerRepository.findOne({
+        where: { id: data.customerId },
+      });
       newOrder.customer = customer;
     }
     return this.orderRepository.save(newOrder);
   }
 
   async update(id: string, data: UpdateOrderDto): Promise<Order> {
-    const order = await this.orderRepository.findOne(id);
+    const order = await this.orderRepository.findOne({ where: { id } });
     if (data.customerId) {
-      const customer = await this.customerRepository.findOne(data.customerId);
+      const customer = await this.customerRepository.findOne({
+        where: { id: data.customerId },
+      });
       order.customer = customer;
     }
     return this.orderRepository.save(order);
